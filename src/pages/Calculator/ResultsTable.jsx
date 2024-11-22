@@ -61,6 +61,9 @@ function ResultsTable({ yearlyData }) {
                             <TableCell align="right">
                                 {numberFormatter(row.totalDividend)}
                             </TableCell>
+                            <TableCell align="right">
+                                {numberFormatter(row.currentDividendRate)}
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

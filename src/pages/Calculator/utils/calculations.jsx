@@ -13,8 +13,7 @@ export function calculateInvestment(params) {
         contributionIncreaseRate = 0,
         volatility = 0,
         investmentYears = 0,
-        dividendIncreaseRate = 0,
-
+        dividendIncreaseRate = 0, // เปลี่ยนชื่อเป็น dividendGrowthRate เพื่อความชัดเจน
     } = params;
 
     // กำหนดความถี่ต่อปี
@@ -28,15 +27,19 @@ export function calculateInvestment(params) {
     const contributionPeriodsPerYear = frequencies[contributionFrequency];
 
     // คำนวณจำนวนงวดทั้งหมด (ใช้ความถี่สูงสุดเพื่อความถูกต้อง)
-    const maxPeriodsPerYear = Math.max(interestPeriodsPerYear, dividendPeriodsPerYear, contributionPeriodsPerYear);
+    const maxPeriodsPerYear = Math.max(
+        interestPeriodsPerYear,
+        dividendPeriodsPerYear,
+        contributionPeriodsPerYear
+    );
     const totalPeriods = investmentYears * maxPeriodsPerYear;
 
     // อัตราดอกเบี้ยและเงินปันผลต่องวด
     const ratePerInterestPeriod = (interestRate / 100) / interestPeriodsPerYear;
-    let ratePerDividendPeriod = (dividendRate / 100) / dividendPeriodsPerYear;
+    const dividendGrowthRate = dividendIncreaseRate / 100; // เปลี่ยนชื่อเพื่อความชัดเจน
     const reinvestmentRate = dividendReinvestmentRate / 100;
-    const contributionIncreasePerPeriod = (contributionIncreaseRate / 100) / contributionPeriodsPerYear;
-    let currentAdjustDividendRate = dividendIncreaseRate / 100;
+    const contributionIncreasePerPeriod =
+        (contributionIncreaseRate / 100) / contributionPeriodsPerYear;
 
     let data = [];
     let balance = initialPrincipal;
@@ -48,18 +51,29 @@ export function calculateInvestment(params) {
     // สร้างตัวแปรสำหรับสรุปผลรายปี
     let yearlyData = [];
 
+    // เก็บอัตราเงินปันผลเริ่มต้น
+    const initialDividendRate = dividendRate / 100;
+
     for (let period = 1; period <= totalPeriods; period++) {
         // คำนวณปีปัจจุบัน
         const year = Math.ceil(period / maxPeriodsPerYear);
-        if (period % maxPeriodsPerYear === 1 && period !== 1) {
-            ratePerDividendPeriod += (ratePerDividendPeriod*currentAdjustDividendRate)
-        }
+
+        // คำนวณอัตราเงินปันผลปัจจุบันตามอัตราการเติบโต
+        const currentDividendRate =
+            initialDividendRate * Math.pow(1 + dividendGrowthRate, year - 1);
+        const ratePerDividendPeriod = currentDividendRate / dividendPeriodsPerYear;
+
         // ความผันผวน
-        const randomVolatility = (Math.random() * 2 - 1) * (volatility / 100);
+        const randomVolatility =
+            (Math.random() * 2 - 1) * (volatility / 100);
 
         // ดอกเบี้ย
         let interest = 0;
-        if ((period - 1) % (maxPeriodsPerYear / interestPeriodsPerYear) === 0) {
+        if (
+            (period - 1) %
+            (maxPeriodsPerYear / interestPeriodsPerYear) ===
+            0
+        ) {
             const adjustedRate = ratePerInterestPeriod + randomVolatility;
             interest = balance * adjustedRate;
             totalInterest += interest;
@@ -68,7 +82,11 @@ export function calculateInvestment(params) {
         // เงินปันผล
         let dividend = 0;
         let reinvestedDividend = 0;
-        if ((period - 1) % (maxPeriodsPerYear / dividendPeriodsPerYear) === 0) {
+        if (
+            (period - 1) %
+            (maxPeriodsPerYear / dividendPeriodsPerYear) ===
+            0
+        ) {
             dividend = balance * ratePerDividendPeriod;
             reinvestedDividend = dividend * reinvestmentRate;
             totalDividend += dividend;
@@ -76,11 +94,16 @@ export function calculateInvestment(params) {
 
         // เงินออม
         let contributionThisPeriod = 0;
-        if ((period - 1) % (maxPeriodsPerYear / contributionPeriodsPerYear) === 0) {
+        if (
+            (period - 1) %
+            (maxPeriodsPerYear / contributionPeriodsPerYear) ===
+            0
+        ) {
             contributionThisPeriod = currentContribution;
             totalContribution += contributionThisPeriod;
             // เพิ่มเงินออมตามอัตราที่กำหนด
-            currentContribution += currentContribution * contributionIncreasePerPeriod;
+            currentContribution +=
+                currentContribution * contributionIncreasePerPeriod;
         }
 
         // อัปเดตยอดเงิน
@@ -94,24 +117,38 @@ export function calculateInvestment(params) {
             interest,
             totalInterest,
             dividend,
+            totalDividend,
             reinvestedDividend,
             contribution: contributionThisPeriod,
             totalContribution,
-            totalDividend
+            currentDividendRate: currentDividendRate * 100, // เก็บอัตราเงินปันผลปัจจุบัน (%)
         });
 
         // สรุปผลรายปี
         if (period % maxPeriodsPerYear === 0) {
             // ดึงข้อมูลของปีนั้น
-            const periodsInYear = data.slice(period - maxPeriodsPerYear, period);
+            const periodsInYear = data.slice(
+                period - maxPeriodsPerYear,
+                period
+            );
 
             // สรุปยอดเงินออม, ดอกเบี้ย, และเงินปันผลในปีนั้น
-            const yearlyContribution = periodsInYear.reduce((sum, p) => sum + p.contribution, 0);
-            const yearlyInterest = periodsInYear.reduce((sum, p) => sum + p.interest, 0);
-            const yearlyDividend = periodsInYear.reduce((sum, p) => sum + p.dividend, 0);
+            const yearlyContribution = periodsInYear.reduce(
+                (sum, p) => sum + p.contribution,
+                0
+            );
+            const yearlyInterest = periodsInYear.reduce(
+                (sum, p) => sum + p.interest,
+                0
+            );
+            const yearlyDividend = periodsInYear.reduce(
+                (sum, p) => sum + p.dividend,
+                0
+            );
 
             // ยอดเงินปลายปี
-            const endOfYearBalance = periodsInYear[periodsInYear.length - 1].balance;
+            const endOfYearBalance =
+                periodsInYear[periodsInYear.length - 1].balance;
 
             // เก็บข้อมูลรายปี
             yearlyData.push({
@@ -119,10 +156,11 @@ export function calculateInvestment(params) {
                 balance: endOfYearBalance,
                 totalContribution,
                 totalInterest,
+                totalDividend,
                 yearlyContribution,
                 yearlyInterest,
                 yearlyDividend,
-                totalDividend,
+                currentDividendRate: currentDividendRate * 100, // เก็บอัตราเงินปันผลปัจจุบัน (%)
             });
         }
     }
@@ -134,4 +172,7 @@ export function calculateInvestment(params) {
 }
 
 export const numberFormatter = (value) =>
-    value.toLocaleString('th-TH', { style: 'currency', currency: 'THB' });
+    value.toLocaleString('th-TH', {
+        style: 'currency',
+        currency: 'THB',
+    });

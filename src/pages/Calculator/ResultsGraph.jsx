@@ -71,7 +71,14 @@ function ResultsGraph({ data }) {
                     <Line
                         type="monotone"
                         dataKey="dividend"
-                        name="ปันผล ณ เดือนนั้น"
+                        name="ปันผล ณ ปัจจุบัน"
+                        stroke="#ffc658"
+                        dot={false}
+                    />
+                    <Line
+                        type="monotone"
+                        dataKey="currentDividendRate"
+                        name="ปันผล ณ ปัจจุบัน (%)"
                         stroke="#ffc658"
                         dot={false}
                     />
