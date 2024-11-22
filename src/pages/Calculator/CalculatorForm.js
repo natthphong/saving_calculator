@@ -12,17 +12,17 @@ import { Button } from 'react-bootstrap';
 
 function CalculatorForm(props) {
     // สถานะสำหรับฟิลด์ต่าง ๆ
-    const [initialPrincipal, setInitialPrincipal] = useState('');
-    const [interestRate, setInterestRate] = useState('');
+    const [initialPrincipal, setInitialPrincipal] = useState('0');
+    const [interestRate, setInterestRate] = useState('10');
     const [interestFrequency, setInterestFrequency] = useState('yearly');
-    const [dividendRate, setDividendRate] = useState('');
+    const [dividendRate, setDividendRate] = useState('0');
     const [dividendFrequency, setDividendFrequency] = useState('yearly');
     const [dividendReinvestmentRate, setDividendReinvestmentRate] = useState('');
-    const [contribution, setContribution] = useState('');
+    const [contribution, setContribution] = useState('10000');
     const [contributionFrequency, setContributionFrequency] = useState('monthly');
     const [contributionIncreaseRate, setContributionIncreaseRate] = useState('');
-    const [volatility, setVolatility] = useState('');
-    const [investmentYears, setInvestmentYears] = useState('');
+    const [volatility, setVolatility] = useState('0');
+    const [investmentYears, setInvestmentYears] = useState('10');
 
     // ฟังก์ชันจัดการการส่งฟอร์ม
     const handleSubmit = (event) => {

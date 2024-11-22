@@ -10,9 +10,17 @@ import {
     TableRow,
     Paper,
 } from '@mui/material';
-import {numberFormatter} from "./utils/calculations";
 
 function ResultsTable({ yearlyData }) {
+    // ฟังก์ชันสำหรับจัดรูปแบบตัวเลข
+    const numberFormatter = (value) =>
+        value.toLocaleString('th-TH', {
+            style: 'currency',
+            currency: 'THB',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        });
+
     return (
         <TableContainer component={Paper} className="my-4">
             <Table>
@@ -31,19 +39,19 @@ function ResultsTable({ yearlyData }) {
                         <TableRow key={row.year}>
                             <TableCell>{row.year}</TableCell>
                             <TableCell align="right">
-                                {numberFormatter(row.balance.toFixed(2))}
+                                {numberFormatter(row.balance)}
                             </TableCell>
                             <TableCell align="right">
-                                {numberFormatter(row.yearlyContribution.toFixed(2))}
+                                {numberFormatter(row.yearlyContribution)}
                             </TableCell>
                             <TableCell align="right">
-                                {numberFormatter(row.yearlyInterest.toFixed(2))}
+                                {numberFormatter(row.yearlyInterest)}
                             </TableCell>
                             <TableCell align="right">
-                                {numberFormatter(row.totalContribution.toFixed(2))}
+                                {numberFormatter(row.totalContribution)}
                             </TableCell>
                             <TableCell align="right">
-                                {numberFormatter(row.totalInterest.toFixed(2))}
+                                {numberFormatter(row.totalInterest)}
                             </TableCell>
                         </TableRow>
                     ))}
