@@ -13,6 +13,8 @@ export function calculateInvestment(params) {
         contributionIncreaseRate = 0,
         volatility = 0,
         investmentYears = 0,
+        dividendIncreaseRate = 0,
+
     } = params;
 
     // กำหนดความถี่ต่อปี
@@ -31,15 +33,16 @@ export function calculateInvestment(params) {
 
     // อัตราดอกเบี้ยและเงินปันผลต่องวด
     const ratePerInterestPeriod = (interestRate / 100) / interestPeriodsPerYear;
-    const ratePerDividendPeriod = (dividendRate / 100) / dividendPeriodsPerYear;
+    let ratePerDividendPeriod = (dividendRate / 100) / dividendPeriodsPerYear;
     const reinvestmentRate = dividendReinvestmentRate / 100;
     const contributionIncreasePerPeriod = (contributionIncreaseRate / 100) / contributionPeriodsPerYear;
+    let currentAdjustDividendRate = dividendIncreaseRate / 100;
 
     let data = [];
     let balance = initialPrincipal;
     let totalContribution = 0;
     let totalInterest = 0;
-    // let totalDividend = 0;
+    let totalDividend = 0;
     let currentContribution = contribution;
 
     // สร้างตัวแปรสำหรับสรุปผลรายปี
@@ -48,7 +51,9 @@ export function calculateInvestment(params) {
     for (let period = 1; period <= totalPeriods; period++) {
         // คำนวณปีปัจจุบัน
         const year = Math.ceil(period / maxPeriodsPerYear);
-
+        if (period % maxPeriodsPerYear === 1 && period !== 1) {
+            ratePerDividendPeriod += (ratePerDividendPeriod*currentAdjustDividendRate)
+        }
         // ความผันผวน
         const randomVolatility = (Math.random() * 2 - 1) * (volatility / 100);
 
@@ -66,7 +71,7 @@ export function calculateInvestment(params) {
         if ((period - 1) % (maxPeriodsPerYear / dividendPeriodsPerYear) === 0) {
             dividend = balance * ratePerDividendPeriod;
             reinvestedDividend = dividend * reinvestmentRate;
-            // totalDividend += dividend;
+            totalDividend += dividend;
         }
 
         // เงินออม
@@ -92,6 +97,7 @@ export function calculateInvestment(params) {
             reinvestedDividend,
             contribution: contributionThisPeriod,
             totalContribution,
+            totalDividend
         });
 
         // สรุปผลรายปี
@@ -116,6 +122,7 @@ export function calculateInvestment(params) {
                 yearlyContribution,
                 yearlyInterest,
                 yearlyDividend,
+                totalDividend,
             });
         }
     }

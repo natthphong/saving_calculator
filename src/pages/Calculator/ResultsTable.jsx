@@ -32,6 +32,8 @@ function ResultsTable({ yearlyData }) {
                         <TableCell align="right">ดอกเบี้ยในปี (บาท)</TableCell>
                         <TableCell align="right">เงินออมสะสม (บาท)</TableCell>
                         <TableCell align="right">ดอกเบี้ยสะสม (บาท)</TableCell>
+                        <TableCell align="right">เงินปันผลในปี (บาท)</TableCell>
+                        <TableCell align="right">เงินปันผลสะสม (บาท)</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -52,6 +54,12 @@ function ResultsTable({ yearlyData }) {
                             </TableCell>
                             <TableCell align="right">
                                 {numberFormatter(row.totalInterest)}
+                            </TableCell>
+                            <TableCell align="right">
+                                {numberFormatter(row.yearlyDividend)}
+                            </TableCell>
+                            <TableCell align="right">
+                                {numberFormatter(row.totalDividend)}
                             </TableCell>
                         </TableRow>
                     ))}

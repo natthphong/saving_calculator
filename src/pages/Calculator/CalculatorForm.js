@@ -17,12 +17,13 @@ function CalculatorForm(props) {
     const [interestFrequency, setInterestFrequency] = useState('yearly');
     const [dividendRate, setDividendRate] = useState('0');
     const [dividendFrequency, setDividendFrequency] = useState('yearly');
-    const [dividendReinvestmentRate, setDividendReinvestmentRate] = useState('');
+    const [dividendReinvestmentRate, setDividendReinvestmentRate] = useState('100');
     const [contribution, setContribution] = useState('10000');
     const [contributionFrequency, setContributionFrequency] = useState('monthly');
     const [contributionIncreaseRate, setContributionIncreaseRate] = useState('');
     const [volatility, setVolatility] = useState('0');
     const [investmentYears, setInvestmentYears] = useState('10');
+    const [dividendIncreaseRate, setDividendIncreaseRate] = useState('0');
 
     // ฟังก์ชันจัดการการส่งฟอร์ม
     const handleSubmit = (event) => {
@@ -41,6 +42,8 @@ function CalculatorForm(props) {
             contributionIncreaseRate: parseFloat(contributionIncreaseRate) || 0,
             volatility: parseFloat(volatility) || 0,
             investmentYears: parseInt(investmentYears) || 0,
+            dividendIncreaseRate: parseFloat(dividendIncreaseRate) || 0,
+
         };
 
         // เรียกใช้ฟังก์ชัน onCalculate ที่ส่งมาทาง props
@@ -105,6 +108,14 @@ function CalculatorForm(props) {
                 </Select>
             </FormControl>
 
+            <TextField
+                label="อัตราการเพิ่มอัตราผลตอบแทนต่อปี (%)"
+                type="number"
+                value={dividendIncreaseRate}
+                onChange={(e) => setDividendIncreaseRate(e.target.value)}
+                fullWidth
+                margin="normal"
+            />
             {/* ฟิลด์สำหรับเปอร์เซ็นต์การนำเงินปันผลไปลงทุนต่อ */}
             <TextField
                 label="นำเงินปันผลไปลงทุนต่อ (%)"

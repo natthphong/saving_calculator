@@ -61,6 +61,20 @@ function ResultsGraph({ data }) {
                         stroke="#ffc658"
                         dot={false}
                     />
+                    <Line
+                        type="monotone"
+                        dataKey="totalDividend"
+                        name="ปันผลสะสม"
+                        stroke="#ffc658"
+                        dot={false}
+                    />
+                    <Line
+                        type="monotone"
+                        dataKey="dividend"
+                        name="ปันผล ณ เดือนนั้น"
+                        stroke="#ffc658"
+                        dot={false}
+                    />
                 </LineChart>
             </ResponsiveContainer>
         </div>
