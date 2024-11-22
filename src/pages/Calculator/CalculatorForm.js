@@ -109,7 +109,7 @@ function CalculatorForm(props) {
             </FormControl>
 
             <TextField
-                label="อัตราการเพิ่มอัตราผลตอบแทนต่อปี (%)"
+                label="อัตราการเพิ่มปันผลต่อปี (%)"
                 type="number"
                 value={dividendIncreaseRate}
                 onChange={(e) => setDividendIncreaseRate(e.target.value)}
