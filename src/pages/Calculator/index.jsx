@@ -6,7 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CalculatorForm from './CalculatorForm';
 import ResultsGraph from './ResultsGraph';
 import ResultsTable from './ResultsTable';
-import { calculateInvestment } from './utils/calculations'; // ฟังก์ชันคำนวณที่เราจะสร้างขึ้น
+import { calculateInvestment } from './utils/calculations';
 
 const theme = createTheme({
     palette: {
@@ -20,12 +20,9 @@ const theme = createTheme({
 });
 
 function CalculatorSaving() {
-    // สถานะสำหรับเก็บผลการคำนวณ
     const [results, setResults] = useState(null);
 
-    // ฟังก์ชันสำหรับจัดการเมื่อผู้ใช้ส่งข้อมูลจากฟอร์ม
     const handleCalculate = (params) => {
-        // เรียกใช้ฟังก์ชันคำนวณและเก็บผลลัพธ์ในสถานะ
         const calculationResults = calculateInvestment(params);
         setResults(calculationResults);
     };
@@ -37,8 +34,8 @@ function CalculatorSaving() {
                 <CalculatorForm onCalculate={handleCalculate} />
                 {results && (
                     <>
-                        <ResultsGraph data={results} />
-                        <ResultsTable data={results} />
+                        <ResultsGraph data={results.yearlyData} />
+                        <ResultsTable yearlyData={results.yearlyData} />
                     </>
                 )}
             </Container>

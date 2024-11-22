@@ -1,60 +1,127 @@
-// utils/calculations.js
+// calculations.js
 
 export function calculateInvestment(params) {
     const {
         initialPrincipal = 0,
         interestRate = 0,
-        frequency = 'monthly',
+        interestFrequency = 'yearly',
         dividendRate = 0,
-        dividendFrequency = 'monthly',
+        dividendFrequency = 'yearly',
         dividendReinvestmentRate = 0,
-        monthlyContribution = 0,
+        contribution = 0,
+        contributionFrequency = 'monthly',
         contributionIncreaseRate = 0,
         volatility = 0,
         investmentYears = 0,
     } = params;
 
-    const periodsPerYear = frequency === 'monthly' ? 12 : 1;
-    const totalPeriods = investmentYears * periodsPerYear;
-    const ratePerPeriod = (interestRate / 100) / periodsPerYear;
-    const dividendPerPeriod = (dividendRate / 100) / (dividendFrequency === 'monthly' ? 12 : 1);
+    // กำหนดความถี่ต่อปี
+    const frequencies = {
+        yearly: 1,
+        monthly: 12,
+    };
+
+    const interestPeriodsPerYear = frequencies[interestFrequency];
+    const dividendPeriodsPerYear = frequencies[dividendFrequency];
+    const contributionPeriodsPerYear = frequencies[contributionFrequency];
+
+    // คำนวณจำนวนงวดทั้งหมด (ใช้ความถี่สูงสุดเพื่อความถูกต้อง)
+    const maxPeriodsPerYear = Math.max(interestPeriodsPerYear, dividendPeriodsPerYear, contributionPeriodsPerYear);
+    const totalPeriods = investmentYears * maxPeriodsPerYear;
+
+    // อัตราดอกเบี้ยและเงินปันผลต่องวด
+    const ratePerInterestPeriod = (interestRate / 100) / interestPeriodsPerYear;
+    const ratePerDividendPeriod = (dividendRate / 100) / dividendPeriodsPerYear;
     const reinvestmentRate = dividendReinvestmentRate / 100;
-    const contributionIncreasePerPeriod = contributionIncreaseRate / 100 / periodsPerYear;
+    const contributionIncreasePerPeriod = (contributionIncreaseRate / 100) / contributionPeriodsPerYear;
 
     let data = [];
     let balance = initialPrincipal;
-    let contribution = monthlyContribution;
+    let totalContribution = 0;
+    let totalInterest = 0;
+    // let totalDividend = 0;
+    let currentContribution = contribution;
+
+    // สร้างตัวแปรสำหรับสรุปผลรายปี
+    let yearlyData = [];
 
     for (let period = 1; period <= totalPeriods; period++) {
+        // คำนวณปีปัจจุบัน
+        const year = Math.ceil(period / maxPeriodsPerYear);
+
         // ความผันผวน
         const randomVolatility = (Math.random() * 2 - 1) * (volatility / 100);
-        const adjustedRate = ratePerPeriod + randomVolatility;
 
         // ดอกเบี้ย
-        const interest = balance * adjustedRate;
+        let interest = 0;
+        if ((period - 1) % (maxPeriodsPerYear / interestPeriodsPerYear) === 0) {
+            const adjustedRate = ratePerInterestPeriod + randomVolatility;
+            interest = balance * adjustedRate;
+            totalInterest += interest;
+        }
 
         // เงินปันผล
-        const dividend = balance * dividendPerPeriod;
+        let dividend = 0;
+        let reinvestedDividend = 0;
+        if ((period - 1) % (maxPeriodsPerYear / dividendPeriodsPerYear) === 0) {
+            dividend = balance * ratePerDividendPeriod;
+            reinvestedDividend = dividend * reinvestmentRate;
+            // totalDividend += dividend;
+        }
 
-        // เงินปันผลที่นำไปลงทุนต่อ
-        const reinvestedDividend = dividend * reinvestmentRate;
+        // เงินออม
+        let contributionThisPeriod = 0;
+        if ((period - 1) % (maxPeriodsPerYear / contributionPeriodsPerYear) === 0) {
+            contributionThisPeriod = currentContribution;
+            totalContribution += contributionThisPeriod;
+            // เพิ่มเงินออมตามอัตราที่กำหนด
+            currentContribution += currentContribution * contributionIncreasePerPeriod;
+        }
 
         // อัปเดตยอดเงิน
-        balance += interest + reinvestedDividend + contribution;
+        balance += interest + reinvestedDividend + contributionThisPeriod;
 
-        // เก็บข้อมูล
+        // เก็บข้อมูลในแต่ละงวด
         data.push({
             period,
+            year,
             balance,
             interest,
+            totalInterest,
             dividend,
             reinvestedDividend,
-            contribution,
+            contribution: contributionThisPeriod,
+            totalContribution,
         });
 
-        // เพิ่มเงินออมตามอัตราที่กำหนด
-        contribution += contribution * contributionIncreasePerPeriod;
+        // สรุปผลรายปี
+        if (period % maxPeriodsPerYear === 0) {
+            // ดึงข้อมูลของปีนั้น
+            const periodsInYear = data.slice(period - maxPeriodsPerYear, period);
+
+            // สรุปยอดเงินออม, ดอกเบี้ย, และเงินปันผลในปีนั้น
+            const yearlyContribution = periodsInYear.reduce((sum, p) => sum + p.contribution, 0);
+            const yearlyInterest = periodsInYear.reduce((sum, p) => sum + p.interest, 0);
+            const yearlyDividend = periodsInYear.reduce((sum, p) => sum + p.dividend, 0);
+
+            // ยอดเงินปลายปี
+            const endOfYearBalance = periodsInYear[periodsInYear.length - 1].balance;
+
+            // เก็บข้อมูลรายปี
+            yearlyData.push({
+                year,
+                balance: endOfYearBalance,
+                totalContribution,
+                totalInterest,
+                yearlyContribution,
+                yearlyInterest,
+                yearlyDividend,
+            });
+        }
     }
 
-    return data;
+    return {
+        data, // ข้อมูลทุกงวด
+        yearlyData, // ข้อมูลสรุปต่อปี
+    };
 }

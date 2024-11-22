@@ -1,16 +1,25 @@
+// CalculatorForm.js
+
 import React, { useState } from 'react';
-import { TextField, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
+import {
+    TextField,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    Select,
+} from '@mui/material';
 import { Button } from 'react-bootstrap';
 
 function CalculatorForm(props) {
-    // สร้างสถานะ (state) สำหรับฟิลด์ต่างๆ
+    // สถานะสำหรับฟิลด์ต่าง ๆ
     const [initialPrincipal, setInitialPrincipal] = useState('');
     const [interestRate, setInterestRate] = useState('');
-    const [frequency, setFrequency] = useState('monthly');
+    const [interestFrequency, setInterestFrequency] = useState('yearly');
     const [dividendRate, setDividendRate] = useState('');
-    const [dividendFrequency, setDividendFrequency] = useState('monthly');
+    const [dividendFrequency, setDividendFrequency] = useState('yearly');
     const [dividendReinvestmentRate, setDividendReinvestmentRate] = useState('');
-    const [monthlyContribution, setMonthlyContribution] = useState('');
+    const [contribution, setContribution] = useState('');
+    const [contributionFrequency, setContributionFrequency] = useState('monthly');
     const [contributionIncreaseRate, setContributionIncreaseRate] = useState('');
     const [volatility, setVolatility] = useState('');
     const [investmentYears, setInvestmentYears] = useState('');
@@ -23,11 +32,12 @@ function CalculatorForm(props) {
         const params = {
             initialPrincipal: parseFloat(initialPrincipal) || 0,
             interestRate: parseFloat(interestRate) || 0,
-            frequency,
+            interestFrequency,
             dividendRate: parseFloat(dividendRate) || 0,
             dividendFrequency,
             dividendReinvestmentRate: parseFloat(dividendReinvestmentRate) || 0,
-            monthlyContribution: parseFloat(monthlyContribution) || 0,
+            contribution: parseFloat(contribution) || 0,
+            contributionFrequency,
             contributionIncreaseRate: parseFloat(contributionIncreaseRate) || 0,
             volatility: parseFloat(volatility) || 0,
             investmentYears: parseInt(investmentYears) || 0,
@@ -39,47 +49,6 @@ function CalculatorForm(props) {
         }
     };
 
-    // ฟังก์ชันจัดการการเปลี่ยนแปลงของฟิลด์ต่างๆ
-    const handleInitialPrincipalChange = (event) => {
-        setInitialPrincipal(event.target.value);
-    };
-
-    const handleInterestRateChange = (event) => {
-        setInterestRate(event.target.value);
-    };
-
-    const handleFrequencyChange = (event) => {
-        setFrequency(event.target.value);
-    };
-
-    const handleDividendRateChange = (event) => {
-        setDividendRate(event.target.value);
-    };
-
-    const handleDividendFrequencyChange = (event) => {
-        setDividendFrequency(event.target.value);
-    };
-
-    const handleDividendReinvestmentRateChange = (event) => {
-        setDividendReinvestmentRate(event.target.value);
-    };
-
-    const handleMonthlyContributionChange = (event) => {
-        setMonthlyContribution(event.target.value);
-    };
-
-    const handleContributionIncreaseRateChange = (event) => {
-        setContributionIncreaseRate(event.target.value);
-    };
-
-    const handleVolatilityChange = (event) => {
-        setVolatility(event.target.value);
-    };
-
-    const handleInvestmentYearsChange = (event) => {
-        setInvestmentYears(event.target.value);
-    };
-
     return (
         <form onSubmit={handleSubmit}>
             {/* ฟิลด์สำหรับเงินต้น */}
@@ -87,7 +56,7 @@ function CalculatorForm(props) {
                 label="เงินต้น"
                 type="number"
                 value={initialPrincipal}
-                onChange={handleInitialPrincipalChange}
+                onChange={(e) => setInitialPrincipal(e.target.value)}
                 fullWidth
                 margin="normal"
             />
@@ -97,7 +66,7 @@ function CalculatorForm(props) {
                 label="อัตราผลตอบแทน (%)"
                 type="number"
                 value={interestRate}
-                onChange={handleInterestRateChange}
+                onChange={(e) => setInterestRate(e.target.value)}
                 fullWidth
                 margin="normal"
             />
@@ -105,7 +74,10 @@ function CalculatorForm(props) {
             {/* ตัวเลือกสำหรับความถี่ของผลตอบแทน */}
             <FormControl fullWidth margin="normal">
                 <InputLabel>ความถี่ของผลตอบแทน</InputLabel>
-                <Select value={frequency} onChange={handleFrequencyChange} variant='filled'>
+                <Select
+                    value={interestFrequency}
+                    onChange={(e) => setInterestFrequency(e.target.value)}
+                >
                     <MenuItem value="monthly">รายเดือน</MenuItem>
                     <MenuItem value="yearly">รายปี</MenuItem>
                 </Select>
@@ -116,7 +88,7 @@ function CalculatorForm(props) {
                 label="อัตราเงินปันผล (%)"
                 type="number"
                 value={dividendRate}
-                onChange={handleDividendRateChange}
+                onChange={(e) => setDividendRate(e.target.value)}
                 fullWidth
                 margin="normal"
             />
@@ -124,7 +96,10 @@ function CalculatorForm(props) {
             {/* ตัวเลือกสำหรับความถี่ของเงินปันผล */}
             <FormControl fullWidth margin="normal">
                 <InputLabel>ความถี่ของเงินปันผล</InputLabel>
-                <Select value={dividendFrequency} onChange={handleDividendFrequencyChange} variant='filled'>
+                <Select
+                    value={dividendFrequency}
+                    onChange={(e) => setDividendFrequency(e.target.value)}
+                >
                     <MenuItem value="monthly">รายเดือน</MenuItem>
                     <MenuItem value="yearly">รายปี</MenuItem>
                 </Select>
@@ -135,27 +110,39 @@ function CalculatorForm(props) {
                 label="นำเงินปันผลไปลงทุนต่อ (%)"
                 type="number"
                 value={dividendReinvestmentRate}
-                onChange={handleDividendReinvestmentRateChange}
+                onChange={(e) => setDividendReinvestmentRate(e.target.value)}
                 fullWidth
                 margin="normal"
             />
 
-            {/* ฟิลด์สำหรับเงินออมต่อเดือน */}
+            {/* ฟิลด์สำหรับเงินออม */}
             <TextField
-                label="เงินออมต่อเดือน"
+                label="เงินออม"
                 type="number"
-                value={monthlyContribution}
-                onChange={handleMonthlyContributionChange}
+                value={contribution}
+                onChange={(e) => setContribution(e.target.value)}
                 fullWidth
                 margin="normal"
             />
+
+            {/* ตัวเลือกสำหรับความถี่ของเงินออม */}
+            <FormControl fullWidth margin="normal">
+                <InputLabel>ความถี่ของเงินออม</InputLabel>
+                <Select
+                    value={contributionFrequency}
+                    onChange={(e) => setContributionFrequency(e.target.value)}
+                >
+                    <MenuItem value="monthly">รายเดือน</MenuItem>
+                    <MenuItem value="yearly">รายปี</MenuItem>
+                </Select>
+            </FormControl>
 
             {/* ฟิลด์สำหรับอัตราการเพิ่มเงินออม */}
             <TextField
-                label="อัตราการเพิ่มเงินออมต่อเดือน (%)"
+                label="อัตราการเพิ่มเงินออม (%)"
                 type="number"
                 value={contributionIncreaseRate}
-                onChange={handleContributionIncreaseRateChange}
+                onChange={(e) => setContributionIncreaseRate(e.target.value)}
                 fullWidth
                 margin="normal"
             />
@@ -165,7 +152,7 @@ function CalculatorForm(props) {
                 label="ความผันผวน (%)"
                 type="number"
                 value={volatility}
-                onChange={handleVolatilityChange}
+                onChange={(e) => setVolatility(e.target.value)}
                 fullWidth
                 margin="normal"
             />
@@ -175,7 +162,7 @@ function CalculatorForm(props) {
                 label="จำนวนปีที่จะลงทุน"
                 type="number"
                 value={investmentYears}
-                onChange={handleInvestmentYearsChange}
+                onChange={(e) => setInvestmentYears(e.target.value)}
                 fullWidth
                 margin="normal"
             />
