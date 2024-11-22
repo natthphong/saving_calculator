@@ -65,21 +65,21 @@ function ResultsGraph({ data }) {
                         type="monotone"
                         dataKey="totalDividend"
                         name="ปันผลสะสม"
-                        stroke="#ffc658"
+                        stroke="#FF69B4" // สีชมพู
                         dot={false}
                     />
                     <Line
                         type="monotone"
                         dataKey="dividend"
                         name="ปันผล ณ ปัจจุบัน"
-                        stroke="#ffc658"
+                        stroke="#00CED1" // สีฟ้าน้ำทะเล
                         dot={false}
                     />
                     <Line
                         type="monotone"
                         dataKey="currentDividendRate"
                         name="ปันผล ณ ปัจจุบัน (%)"
-                        stroke="#ffc658"
+                        stroke="#8A2BE2" // สีม่วงน้ำเงิน
                         dot={false}
                     />
                 </LineChart>

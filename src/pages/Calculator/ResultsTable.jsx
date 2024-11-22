@@ -34,6 +34,7 @@ function ResultsTable({ yearlyData }) {
                         <TableCell align="right">ดอกเบี้ยสะสม (บาท)</TableCell>
                         <TableCell align="right">เงินปันผลในปี (บาท)</TableCell>
                         <TableCell align="right">เงินปันผลสะสม (บาท)</TableCell>
+                        <TableCell align="right">เงินปันผล (%)</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -62,7 +63,7 @@ function ResultsTable({ yearlyData }) {
                                 {numberFormatter(row.totalDividend)}
                             </TableCell>
                             <TableCell align="right">
-                                {numberFormatter(row.currentDividendRate)}
+                                {`${row.currentDividendRate.toFixed(2)}%`}
                             </TableCell>
                         </TableRow>
                     ))}
