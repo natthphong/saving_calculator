@@ -34,7 +34,7 @@ function CalculatorSaving() {
                 <CalculatorForm onCalculate={handleCalculate} />
                 {results && (
                     <>
-                        <ResultsGraph data={results.yearlyData} />
+                        <ResultsGraph data={results.data} />
                         <ResultsTable yearlyData={results.yearlyData} />
                     </>
                 )}

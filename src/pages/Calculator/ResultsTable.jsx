@@ -10,6 +10,7 @@ import {
     TableRow,
     Paper,
 } from '@mui/material';
+import {numberFormatter} from "./utils/calculations";
 
 function ResultsTable({ yearlyData }) {
     return (
@@ -30,19 +31,19 @@ function ResultsTable({ yearlyData }) {
                         <TableRow key={row.year}>
                             <TableCell>{row.year}</TableCell>
                             <TableCell align="right">
-                                {row.balance.toFixed(2).toLocaleString()}
+                                {numberFormatter(row.balance.toFixed(2))}
                             </TableCell>
                             <TableCell align="right">
-                                {row.yearlyContribution.toFixed(2).toLocaleString()}
+                                {numberFormatter(row.yearlyContribution.toFixed(2))}
                             </TableCell>
                             <TableCell align="right">
-                                {row.yearlyInterest.toFixed(2).toLocaleString()}
+                                {numberFormatter(row.yearlyInterest.toFixed(2))}
                             </TableCell>
                             <TableCell align="right">
-                                {row.totalContribution.toFixed(2).toLocaleString()}
+                                {numberFormatter(row.totalContribution.toFixed(2))}
                             </TableCell>
                             <TableCell align="right">
-                                {row.totalInterest.toFixed(2).toLocaleString()}
+                                {numberFormatter(row.totalInterest.toFixed(2))}
                             </TableCell>
                         </TableRow>
                     ))}

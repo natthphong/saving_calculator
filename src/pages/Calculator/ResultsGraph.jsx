@@ -10,30 +10,40 @@ import {
     Legend,
     ResponsiveContainer,
 } from 'recharts';
+import { numberFormatter } from './utils/calculations';
 
 function ResultsGraph({ data }) {
-    // ฟังก์ชันสำหรับจัดรูปแบบตัวเลข
-    const numberFormatter = (value) => value.toLocaleString();
+
+    const monthFormatter = (period) => {
+        const year = Math.floor((period - 1) / 12) + 1;
+        const month = ((period - 1) % 12) + 1;
+        return `ปี ${year} เดือน ${month}`;
+    };
 
     return (
         <div className="my-4">
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={data}>
                     <XAxis
-                        dataKey="year"
+                        dataKey="period"
+                        tickFormatter={monthFormatter}
+                        interval="preserveStartEnd"
                         label={{
-                            value: 'ปีที่',
+                            value: 'เดือนที่',
                             position: 'insideBottomRight',
                             offset: -5,
                         }}
                     />
                     <YAxis tickFormatter={numberFormatter} />
-                    <Tooltip formatter={(value) => value.toLocaleString()} />
+                    <Tooltip
+                        formatter={(value) => numberFormatter(value)}
+                        labelFormatter={(label) => `เดือนที่ ${label}`}
+                    />
                     <Legend />
                     <Line
                         type="monotone"
                         dataKey="balance"
-                        name="ยอดเงินปลายปี"
+                        name="ยอดเงิน"
                         stroke="#8884d8"
                         dot={false}
                     />

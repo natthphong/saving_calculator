@@ -125,3 +125,6 @@ export function calculateInvestment(params) {
         yearlyData, // ข้อมูลสรุปต่อปี
     };
 }
+
+export const numberFormatter = (value) =>
+    value.toLocaleString('th-TH', { style: 'currency', currency: 'THB' });
