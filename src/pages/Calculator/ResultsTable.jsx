@@ -29,11 +29,12 @@ function ResultsTable({ yearlyData }) {
                         <TableCell>ปีที่</TableCell>
                         <TableCell align="right">ยอดเงินปลายปี (บาท)</TableCell>
                         <TableCell align="right">เงินออมในปี (บาท)</TableCell>
-                        <TableCell align="right">ดอกเบี้ยในปี (บาท)</TableCell>
                         <TableCell align="right">เงินออมสะสม (บาท)</TableCell>
+                        <TableCell align="right">ดอกเบี้ยในปี (บาท)</TableCell>
                         <TableCell align="right">ดอกเบี้ยสะสม (บาท)</TableCell>
                         <TableCell align="right">เงินปันผลในปี (บาท)</TableCell>
                         <TableCell align="right">เงินปันผลสะสม (บาท)</TableCell>
+                        <TableCell align="right">ภาษีเงินปันผลในปี (บาท)</TableCell>
                         <TableCell align="right">เงินปันผล (%)</TableCell>
                     </TableRow>
                 </TableHead>
@@ -48,10 +49,10 @@ function ResultsTable({ yearlyData }) {
                                 {numberFormatter(row.yearlyContribution)}
                             </TableCell>
                             <TableCell align="right">
-                                {numberFormatter(row.yearlyInterest)}
+                                {numberFormatter(row.totalContribution)}
                             </TableCell>
                             <TableCell align="right">
-                                {numberFormatter(row.totalContribution)}
+                                {numberFormatter(row.yearlyInterest)}
                             </TableCell>
                             <TableCell align="right">
                                 {numberFormatter(row.totalInterest)}
@@ -61,6 +62,9 @@ function ResultsTable({ yearlyData }) {
                             </TableCell>
                             <TableCell align="right">
                                 {numberFormatter(row.totalDividend)}
+                            </TableCell>
+                            <TableCell align="right">
+                                {numberFormatter(row.yearlyDividendTax)}
                             </TableCell>
                             <TableCell align="right">
                                 {`${row.currentDividendRate.toFixed(2)}%`}

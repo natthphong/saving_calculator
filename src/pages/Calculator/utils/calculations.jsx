@@ -13,7 +13,8 @@ export function calculateInvestment(params) {
         contributionIncreaseRate = 0,
         volatility = 0,
         investmentYears = 0,
-        dividendIncreaseRate = 0, // เปลี่ยนชื่อเป็น dividendGrowthRate เพื่อความชัดเจน
+        dividendIncreaseRate = 0,
+        dividendTaxRate = 0,
     } = params;
 
     // กำหนดความถี่ต่อปี
@@ -38,6 +39,7 @@ export function calculateInvestment(params) {
     const ratePerInterestPeriod = (interestRate / 100) / interestPeriodsPerYear;
     const dividendGrowthRate = dividendIncreaseRate / 100; // เปลี่ยนชื่อเพื่อความชัดเจน
     const reinvestmentRate = dividendReinvestmentRate / 100;
+    const currentDividendTaxRate = dividendTaxRate/100;
     const contributionIncreasePerPeriod =
         (contributionIncreaseRate / 100) / contributionPeriodsPerYear;
 
@@ -81,13 +83,17 @@ export function calculateInvestment(params) {
 
         // เงินปันผล
         let dividend = 0;
+        let dividendTax = 0;
         let reinvestedDividend = 0;
         if (
             (period - 1) %
             (maxPeriodsPerYear / dividendPeriodsPerYear) ===
             0
         ) {
-            dividend = balance * ratePerDividendPeriod;
+
+            dividend = (balance * ratePerDividendPeriod)
+            dividendTax = currentDividendTaxRate * dividend
+            dividend = dividend-dividendTax
             reinvestedDividend = dividend * reinvestmentRate;
             totalDividend += dividend;
         }
@@ -122,6 +128,7 @@ export function calculateInvestment(params) {
             contribution: contributionThisPeriod,
             totalContribution,
             currentDividendRate: currentDividendRate * 100, // เก็บอัตราเงินปันผลปัจจุบัน (%)
+            dividendTax,
         });
 
         // สรุปผลรายปี
@@ -145,6 +152,10 @@ export function calculateInvestment(params) {
                 (sum, p) => sum + p.dividend,
                 0
             );
+            const yearlyDividendTax = periodsInYear.reduce(
+                (sum, p) => sum + p.dividendTax,
+                0
+            );
 
             // ยอดเงินปลายปี
             const endOfYearBalance =
@@ -161,6 +172,7 @@ export function calculateInvestment(params) {
                 yearlyInterest,
                 yearlyDividend,
                 currentDividendRate: currentDividendRate * 100, // เก็บอัตราเงินปันผลปัจจุบัน (%)
+                yearlyDividendTax,
             });
         }
     }

@@ -24,6 +24,7 @@ function CalculatorForm(props) {
     const [volatility, setVolatility] = useState('0');
     const [investmentYears, setInvestmentYears] = useState('10');
     const [dividendIncreaseRate, setDividendIncreaseRate] = useState('0');
+    const [dividendTaxRate, setDividendTaxRate] = useState('15');
 
     // ฟังก์ชันจัดการการส่งฟอร์ม
     const handleSubmit = (event) => {
@@ -43,7 +44,7 @@ function CalculatorForm(props) {
             volatility: parseFloat(volatility) || 0,
             investmentYears: parseInt(investmentYears) || 0,
             dividendIncreaseRate: parseFloat(dividendIncreaseRate) || 0,
-
+            dividendTaxRate: parseFloat(dividendTaxRate) || 0,
         };
 
         // เรียกใช้ฟังก์ชัน onCalculate ที่ส่งมาทาง props
@@ -122,6 +123,14 @@ function CalculatorForm(props) {
                 type="number"
                 value={dividendReinvestmentRate}
                 onChange={(e) => setDividendReinvestmentRate(e.target.value)}
+                fullWidth
+                margin="normal"
+            />
+            <TextField
+                label="ภาษีเงินปันผล (%)"
+                type="number"
+                value={dividendTaxRate}
+                onChange={(e) => setDividendTaxRate(e.target.value)}
                 fullWidth
                 margin="normal"
             />
