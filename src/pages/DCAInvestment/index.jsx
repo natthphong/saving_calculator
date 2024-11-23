@@ -25,7 +25,9 @@ function DCAInvestment() {
         { id: 1, stockData: null },
     ]);
     const [results, setResults] = useState(null);
-
+    const removeStockCard = (id) => {
+        setStockCards(stockCards.filter(card => card.id !== id));
+    };
     const addStockCard = () => {
         setStockCards([...stockCards, { id: stockCards.length + 1, stockData: null }]);
     };
@@ -48,6 +50,7 @@ function DCAInvestment() {
                         key={card.id}
                         id={card.id}
                         onUpdate={updateStockData}
+                        onRemove={removeStockCard}
                     />
                 ))}
                 <Button variant="success" onClick={addStockCard} className="mt-3">

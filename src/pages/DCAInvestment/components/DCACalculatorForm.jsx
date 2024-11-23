@@ -8,8 +8,10 @@ import {
     Typography,
     Grid,
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import {Button} from "react-bootstrap";
 
-function DCACalculatorForm({ id, onUpdate }) {
+function DCACalculatorForm({ id, onUpdate ,onRemove}) {
     // สถานะสำหรับฟิลด์ต่าง ๆ
     const [stockName, setStockName] = useState('');
     const [currentStockPrice, setCurrentStockPrice] = useState('');
@@ -53,7 +55,17 @@ function DCACalculatorForm({ id, onUpdate }) {
     return (
         <Card className="my-4">
             <CardContent>
-                <Typography variant="h5">หุ้น #{id}</Typography>
+                <Grid container alignItems="center" justifyContent="space-between">
+                    <Typography variant="h5">หุ้น #{id}</Typography>
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => onRemove(id)}
+                        startIcon={<DeleteIcon />}
+                    >
+                        ลบ
+                    </Button>
+                </Grid>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <TextField
