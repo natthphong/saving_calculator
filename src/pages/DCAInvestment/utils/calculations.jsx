@@ -7,9 +7,11 @@ export function calculateDCAInvestment(stocksData) {
     // คำนวณจำนวนปีสูงสุด
     const maxInvestmentYears = Math.max(...stocksData.map(stock => stock.investmentYears));
 
+    let totalContribution = 0; // ย้ายการประกาศตัวแปรนี้ออกนอกลูป
+
     for (let year = 1; year <= maxInvestmentYears; year++) {
         let totalBalance = 0;
-        let totalContribution = 0;
+        let totalCurrentContribution = 0;
         let totalDividend = 0;
         let totalDividendTax = 0;
         let stockPortion = [];
@@ -22,7 +24,6 @@ export function calculateDCAInvestment(stocksData) {
             // ราคาหุ้น ณ ปีนี้
             const stockPrice = stock.currentStockPrice * Math.pow(1 + stock.stockReturnRate / 100, year - 1);
 
-            // เงินต้นสำหรับหุ้นนี้
             const initialPrincipal = stock.initialPrincipal || 0;
 
             // เงินออมต่อปี
@@ -34,25 +35,29 @@ export function calculateDCAInvestment(stocksData) {
                 initialShares = initialPrincipal / stockPrice;
             }
 
-            // จำนวนหุ้นที่ซื้อได้ในปีนี้จากเงินออม
+            // จำนวนหุ้นที่ซื้อได้ในปีนี้
             const sharesPurchased = annualContribution / stockPrice;
 
             // รวมจำนวนหุ้นที่ถืออยู่
             const previousTotalSharesHeld = previousData.length > 0 ? previousData[previousData.length - 1].totalSharesHeld : 0;
-            const totalSharesHeld = previousTotalSharesHeld + sharesPurchased + initialShares;
+            const totalSharesHeld = sharesPurchased + previousTotalSharesHeld + initialShares;
 
-            // คำนวณปันผลต่อหุ้น
-            const dividendPerShare = (stock.dividendYield / 100) * Math.pow(1 + stock.dividendGrowthRate / 100, year - 1);
+            // คำนวณอัตราปันผลต่อปี (รวมการเติบโตของปันผล)
+            const dividendYieldCurrentYear = stock.dividendYield * Math.pow(1 + stock.dividendGrowthRate / 100, year - 1);
+            // คำนวณปันผลต่อหุ้น (ในรูปของจำนวนเงิน)
+            const dividendPerShare = stockPrice * (dividendYieldCurrentYear / 100);
 
             // ปันผลที่ได้รับในปีนี้
-            let dividendReceived = totalSharesHeld * (dividendPerShare);
+            let dividendReceived = totalSharesHeld * dividendPerShare;
+
+            // คำนวณภาษีปันผล
             const dividendTax = dividendReceived * (stock.dividendTaxRate / 100);
             totalDividendTax += dividendTax;
 
-            // หักภาษีจากปันผล
+            // หักภาษีจากปันผลที่ได้รับ
             dividendReceived = dividendReceived - dividendTax;
 
-            // นำปันผลไปลงทุนต่อ
+            // จำนวนหุ้นที่ได้จากการลงทุนปันผลซ้ำ
             const reinvestedDividendShares = (dividendReceived * (stock.dividendReinvestmentRate / 100)) / stockPrice;
 
             // อัปเดตจำนวนหุ้นที่ถืออยู่
@@ -62,7 +67,8 @@ export function calculateDCAInvestment(stocksData) {
             const balance = newTotalSharesHeld * stockPrice;
 
             totalBalance += balance;
-            totalContribution += annualContribution + initialPrincipal;
+            totalContribution += annualContribution;
+            totalCurrentContribution += annualContribution;
             totalDividend += dividendReceived;
 
             stockPortion.push({
@@ -70,6 +76,7 @@ export function calculateDCAInvestment(stocksData) {
                 balance,
                 percentage: 0, // จะคำนวณภายหลัง
                 totalSharesHeld: newTotalSharesHeld, // เพิ่มจำนวนหุ้นรวม
+
             });
 
             // เก็บข้อมูลรายปี
@@ -78,7 +85,6 @@ export function calculateDCAInvestment(stocksData) {
                 stockName: stock.stockName,
                 stockPrice,
                 sharesPurchased,
-                initialShares,
                 totalSharesHeld: newTotalSharesHeld,
                 dividendReceived,
                 balance,
@@ -97,6 +103,7 @@ export function calculateDCAInvestment(stocksData) {
             year,
             totalBalance,
             totalContribution,
+            totalCurrentContribution,
             totalDividend,
             stockPortion,
             totalDividendTax,

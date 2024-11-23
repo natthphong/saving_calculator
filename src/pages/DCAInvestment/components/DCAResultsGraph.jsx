@@ -15,7 +15,6 @@ import {numberFormatter} from "../../Calculator/utils/calculations";
 function DCAResultsGraph({ data }) {
     // จัดกลุ่มข้อมูลตามปีและหุ้น
     const chartData = [];
-
     if (data){
         data.forEach(item => {
             const existing = chartData.find(d => d.year === item.year);
@@ -51,7 +50,7 @@ function DCAResultsGraph({ data }) {
                         labelFormatter={(label) => `ปีที่ ${label}`}
                     />
                     <Legend />
-                    {chartData &&Object.keys(chartData[0])
+                    {Object.keys(chartData[0])
                         .filter(key => key !== 'year')
                         .map((key, index) => (
                             <Line
