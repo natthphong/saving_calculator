@@ -1,6 +1,6 @@
 // DCAInvestment.js
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import DCACalculatorForm from './components/DCACalculatorForm';
@@ -38,7 +38,7 @@ function DCAInvestment() {
     };
 
     const addStockCard = () => {
-        setStockCards([...stockCards, { id: Date.now(), stockData: null }]);
+        setStockCards([...stockCards, { id: stockCards.length + 1, stockData: null }]);
     };
 
     const handleCalculate = () => {
