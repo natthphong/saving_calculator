@@ -22,7 +22,7 @@ function DCACalculatorForm({ id, handleCalculate, onRemove }) {
     const [dividendYield, setDividendYield] = useState('');
     const [dividendGrowthRate, setDividendGrowthRate] = useState('');
     const [contribution, setContribution] = useState('10000');
-    const [investmentYears, setInvestmentYears] = useState('10');
+    const [investmentYears, setInvestmentYears] = useState('15');
     const [dividendReinvestmentRate, setDividendReinvestmentRate] = useState('100');
     const [dividendTaxRate, setDividendTaxRate] = useState('10');
 
