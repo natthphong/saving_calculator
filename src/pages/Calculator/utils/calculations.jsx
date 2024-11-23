@@ -183,8 +183,27 @@ export function calculateInvestment(params) {
     };
 }
 
-export const numberFormatter = (value) =>
-    value.toLocaleString('th-TH', {
-        style: 'currency',
-        currency: 'THB',
-    });
+export const numberFormatter = (value) => {
+    if (Math.abs(value) >= 1_000_000) {
+        return (
+            (value / 1_000_000).toLocaleString('th-TH', {
+                maximumFractionDigits: 4,
+            }) + 'm'
+        );
+    } else if (Math.abs(value) >= 1_000) {
+        return (
+            (value / 1_000).toLocaleString('th-TH', {
+                maximumFractionDigits: 4,
+            }) + 'k'
+        );
+    } else {
+        return value.toLocaleString('th-TH', {
+            style: 'currency',
+            currency: 'THB',
+            minimumFractionDigits: 4,
+            maximumFractionDigits: 4,
+        });
+    }
+};
+
+

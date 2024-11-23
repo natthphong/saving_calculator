@@ -40,7 +40,9 @@ function DCAResultsGraph({ data }) {
                             offset: -5,
                         }}
                     />
-                    <YAxis tickFormatter={numberFormatter} />
+                    <YAxis
+                        tickFormatter={numberFormatter}
+                    />
                     <Tooltip
                         formatter={(value) => numberFormatter(value)}
                         labelFormatter={(label) => `ปีที่ ${label}`}
