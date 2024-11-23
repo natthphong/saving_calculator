@@ -19,9 +19,10 @@ function DCACalculatorForm({ id, onUpdate ,onRemove}) {
     const [dividendYield, setDividendYield] = useState('');
     const [dividendGrowthRate, setDividendGrowthRate] = useState('');
     const [contribution, setContribution] = useState('');
-    const [investmentYears, setInvestmentYears] = useState('');
+    const [investmentYears, setInvestmentYears] = useState('10');
     const [dividendReinvestmentRate, setDividendReinvestmentRate] = useState('100');
-
+    // const [dividendFrequency, _setDividendFrequency] = useState('yearly');
+    const [dividendTaxRate, setDividendTaxRate] = useState('15');
     // ฟังก์ชันจัดการการเปลี่ยนแปลง
     const handleChange = () => {
         const data = {
@@ -33,6 +34,8 @@ function DCACalculatorForm({ id, onUpdate ,onRemove}) {
             contribution: parseFloat(contribution) || 0,
             investmentYears: parseInt(investmentYears) || 0,
             dividendReinvestmentRate: parseFloat(dividendReinvestmentRate) || 0,
+            // dividendFrequency: parseFloat(dividendFrequency) || 0,
+            dividendTaxRate: parseFloat(dividendTaxRate) || 0,
         };
         onUpdate(id, data);
     };
@@ -122,6 +125,14 @@ function DCACalculatorForm({ id, onUpdate ,onRemove}) {
                             type="number"
                             value={dividendReinvestmentRate}
                             onChange={(e) => setDividendReinvestmentRate(e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="ภาษีเงินปันผล (%)"
+                            type="number"
+                            value={dividendTaxRate}
+                            onChange={(e) => setDividendTaxRate(e.target.value)}
                             fullWidth
                             margin="normal"
                         />

@@ -10,6 +10,7 @@ import {
     Legend,
     ResponsiveContainer,
 } from 'recharts';
+import {numberFormatter} from "../../Calculator/utils/calculations";
 
 function DCAResultsGraph({ data }) {
     // จัดกลุ่มข้อมูลตามปีและหุ้น
@@ -39,8 +40,11 @@ function DCAResultsGraph({ data }) {
                             offset: -5,
                         }}
                     />
-                    <YAxis />
-                    <Tooltip />
+                    <YAxis tickFormatter={numberFormatter} />
+                    <Tooltip
+                        formatter={(value) => numberFormatter(value)}
+                        labelFormatter={(label) => `ปีที่ ${label}`}
+                    />
                     <Legend />
                     {Object.keys(chartData[0])
                         .filter(key => key !== 'year')

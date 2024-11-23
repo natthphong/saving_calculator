@@ -3,7 +3,7 @@
 export function calculateDCAInvestment(stocksData) {
     let allData = [];
     let yearlyData = [];
-    let portfolio = [];
+    // let portfolio = [];
 
     // คำนวณจำนวนปีสูงสุด
     const maxInvestmentYears = Math.max(...stocksData.map(stock => stock.investmentYears));
@@ -12,8 +12,8 @@ export function calculateDCAInvestment(stocksData) {
         let totalBalance = 0;
         let totalContribution = 0;
         let totalDividend = 0;
+        let totalDividendTax = 0;
         let stockPortion = [];
-
         stocksData.forEach((stock, index) => {
             if (year > stock.investmentYears) return;
 
@@ -33,11 +33,16 @@ export function calculateDCAInvestment(stocksData) {
 
             // คำนวณปันผลต่อหุ้น
             const dividendPerShare = (stock.dividendYield / 100) * Math.pow(1 + stock.dividendGrowthRate / 100, year - 1);
-
+            // console.log(stock.stockName);
+            // console.log(totalSharesHeld);
+            // console.log(dividendPerShare);
             // ปันผลที่ได้รับในปีนี้
-            const dividendReceived = totalSharesHeld * dividendPerShare;
 
+            let dividendReceived = totalSharesHeld *(stockPrice* dividendPerShare);
+            const dividendTax = dividendReceived* (stock.dividendTaxRate/100)
+            totalDividendTax += dividendTax;
             // นำปันผลไปลงทุนต่อ
+            dividendReceived= dividendReceived - dividendTax;
             const reinvestedDividend = (dividendReceived * (stock.dividendReinvestmentRate / 100)) / stockPrice;
 
             // อัปเดตจำนวนหุ้นที่ถืออยู่
@@ -66,6 +71,7 @@ export function calculateDCAInvestment(stocksData) {
                 dividendReceived,
                 balance,
                 annualContribution,
+                dividendTax,
             });
         });
 
@@ -81,6 +87,7 @@ export function calculateDCAInvestment(stocksData) {
             totalContribution,
             totalDividend,
             stockPortion,
+            totalDividendTax,
         });
     }
 

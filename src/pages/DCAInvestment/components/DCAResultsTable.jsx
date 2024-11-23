@@ -29,7 +29,10 @@ function DCAResultsTable({ yearlyData }) {
                         <TableCell>ปีที่</TableCell>
                         <TableCell align="right">มูลค่าพอร์ต (บาท)</TableCell>
                         <TableCell align="right">เงินออมสะสม (บาท)</TableCell>
+                        <TableCell align="right">ผลตอบแทนสะสม (บาท)</TableCell>
                         <TableCell align="right">ปันผลสะสม (บาท)</TableCell>
+                        <TableCell align="right">ภาษีเงินปันผล (บาท)</TableCell>
+                        {/*<TableCell align="right">ปันผล % ต่อปี (บาท)</TableCell>*/}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -43,8 +46,17 @@ function DCAResultsTable({ yearlyData }) {
                                 {numberFormatter(row.totalContribution)}
                             </TableCell>
                             <TableCell align="right">
+                                {numberFormatter(row.totalBalance-row.totalContribution)}
+                            </TableCell>
+                            <TableCell align="right">
                                 {numberFormatter(row.totalDividend)}
                             </TableCell>
+                            <TableCell align="right">
+                                {numberFormatter(row.totalDividendTax)}
+                            </TableCell>
+                            {/*<TableCell align="right">*/}
+                            {/*    {numberFormatter(row.totalDividendPercent)}*/}
+                            {/*</TableCell>*/}
                         </TableRow>
                     ))}
                 </TableBody>
