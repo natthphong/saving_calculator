@@ -1,7 +1,7 @@
 // components/PortfolioOverview.js
 
 import React from 'react';
-import {PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer} from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 function PortfolioOverview({ portfolio }) {
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AA336A'];
@@ -25,14 +25,18 @@ function PortfolioOverview({ portfolio }) {
                         ))}
                     </Pie>
                     <Tooltip
-                        formatter={(value) =>
-                            value.toLocaleString('th-TH', {
-                                style: 'currency',
-                                currency: 'THB',
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                            })
-                        }
+                        formatter={(value, name, props) => {
+                            const stock = portfolio.find(s => s.stockName === name);
+                            return [
+                                value.toLocaleString('th-TH', {
+                                    style: 'currency',
+                                    currency: 'THB',
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                }),
+                                `มูลค่า (${stock.totalSharesHeld.toFixed(2)} หุ้น)`,
+                            ];
+                        }}
                     />
                     <Legend />
                 </PieChart>

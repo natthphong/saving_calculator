@@ -1,59 +1,39 @@
 // components/DCACalculatorForm.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     TextField,
     Card,
     CardContent,
     Typography,
     Grid,
+    Button,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {Button} from "react-bootstrap";
 
-function DCACalculatorForm({ id, onUpdate ,onRemove}) {
-    // สถานะสำหรับฟิลด์ต่าง ๆ
-    const [stockName, setStockName] = useState('');
-    const [currentStockPrice, setCurrentStockPrice] = useState('');
-    const [stockReturnRate, setStockReturnRate] = useState('');
-    const [dividendYield, setDividendYield] = useState('');
-    const [dividendGrowthRate, setDividendGrowthRate] = useState('');
-    const [contribution, setContribution] = useState('');
-    const [investmentYears, setInvestmentYears] = useState('10');
-    const [dividendReinvestmentRate, setDividendReinvestmentRate] = useState('100');
-    // const [dividendFrequency, _setDividendFrequency] = useState('yearly');
-    const [dividendTaxRate, setDividendTaxRate] = useState('15');
-    // ฟังก์ชันจัดการการเปลี่ยนแปลง
-    const handleChange = () => {
-        const data = {
-            stockName,
-            currentStockPrice: parseFloat(currentStockPrice) || 0,
-            stockReturnRate: parseFloat(stockReturnRate) || 0,
-            dividendYield: parseFloat(dividendYield) || 0,
-            dividendGrowthRate: parseFloat(dividendGrowthRate) || 0,
-            contribution: parseFloat(contribution) || 0,
-            investmentYears: parseInt(investmentYears) || 0,
-            dividendReinvestmentRate: parseFloat(dividendReinvestmentRate) || 0,
-            // dividendFrequency: parseFloat(dividendFrequency) || 0,
-            dividendTaxRate: parseFloat(dividendTaxRate) || 0,
-        };
-        onUpdate(id, data);
+function DCACalculatorForm({ id, stockData, onUpdate, onRemove }) {
+    const [formData, setFormData] = useState(
+        stockData || {
+            stockName: '',
+            currentStockPrice: '',
+            initialPrincipal: '', // เพิ่มฟิลด์เงินต้น
+            stockReturnRate: '',
+            dividendYield: '',
+            dividendGrowthRate: '',
+            contribution: '',
+            investmentYears: '',
+            dividendReinvestmentRate: '100',
+            dividendTaxRate: '0', // เพิ่มฟิลด์ภาษีปันผล (ถ้ายังไม่ได้เพิ่ม)
+        }
+    );
+
+    useEffect(() => {
+        onUpdate(id, formData);
+    }, [formData, id, onUpdate]);
+
+    const handleChange = (field, value) => {
+        setFormData(prevData => ({ ...prevData, [field]: value }));
     };
-
-    // ใช้ useEffect เพื่อเรียก handleChange เมื่อมีการเปลี่ยนแปลงค่า
-    React.useEffect(() => {
-        handleChange();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [
-        stockName,
-        currentStockPrice,
-        stockReturnRate,
-        dividendYield,
-        dividendGrowthRate,
-        contribution,
-        investmentYears,
-        dividendReinvestmentRate,
-    ]);
 
     return (
         <Card className="my-4">
@@ -73,74 +53,82 @@ function DCACalculatorForm({ id, onUpdate ,onRemove}) {
                     <Grid item xs={12} sm={6}>
                         <TextField
                             label="ชื่อหุ้น"
-                            value={stockName}
-                            onChange={(e) => setStockName(e.target.value)}
+                            value={formData.stockName}
+                            onChange={(e) => handleChange('stockName', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
                             label="ราคาหุ้นปัจจุบัน"
                             type="number"
-                            value={currentStockPrice}
-                            onChange={(e) => setCurrentStockPrice(e.target.value)}
+                            value={formData.currentStockPrice}
+                            onChange={(e) => handleChange('currentStockPrice', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="อัตราผลตอบแทนของหุ้นต่อปี (%)"
+                            label="เงินต้น"
                             type="number"
-                            value={stockReturnRate}
-                            onChange={(e) => setStockReturnRate(e.target.value)}
+                            value={formData.initialPrincipal}
+                            onChange={(e) => handleChange('initialPrincipal', e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="อัตราผลตอบแทน (%)"
+                            type="number"
+                            value={formData.stockReturnRate}
+                            onChange={(e) => handleChange('stockReturnRate', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
                             label="เงินออมต่อเดือน"
                             type="number"
-                            value={contribution}
-                            onChange={(e) => setContribution(e.target.value)}
+                            value={formData.contribution}
+                            onChange={(e) => handleChange('contribution', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
-                            label="อัตราเงินปันผล (%)"
+                            label="ปันผล (%)"
                             type="number"
-                            value={dividendYield}
-                            onChange={(e) => setDividendYield(e.target.value)}
+                            value={formData.dividendYield}
+                            onChange={(e) => handleChange('dividendYield', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="อัตราการเติบโตของปันผลต่อปี (%)"
+                            label="การเติบโตของปันผล (%)"
                             type="number"
-                            value={dividendGrowthRate}
-                            onChange={(e) => setDividendGrowthRate(e.target.value)}
+                            value={formData.dividendGrowthRate}
+                            onChange={(e) => handleChange('dividendGrowthRate', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="นำเงินปันผลไปลงทุนต่อ (%)"
+                            label="อัตราภาษีปันผล (%)"
                             type="number"
-                            value={dividendReinvestmentRate}
-                            onChange={(e) => setDividendReinvestmentRate(e.target.value)}
+                            value={formData.dividendTaxRate}
+                            onChange={(e) => handleChange('dividendTaxRate', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="ภาษีเงินปันผล (%)"
+                            label="ลงทุนปันผลซ้ำ (%)"
                             type="number"
-                            value={dividendTaxRate}
-                            onChange={(e) => setDividendTaxRate(e.target.value)}
+                            value={formData.dividendReinvestmentRate}
+                            onChange={(e) => handleChange('dividendReinvestmentRate', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="จำนวนปีที่จะลงทุน"
+                            label="จำนวนปีลงทุน"
                             type="number"
-                            value={investmentYears}
-                            onChange={(e) => setInvestmentYears(e.target.value)}
+                            value={formData.investmentYears}
+                            onChange={(e) => handleChange('investmentYears', e.target.value)}
                             fullWidth
                             margin="normal"
                         />

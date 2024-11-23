@@ -16,17 +16,20 @@ function DCAResultsGraph({ data }) {
     // จัดกลุ่มข้อมูลตามปีและหุ้น
     const chartData = [];
 
-    data.forEach(item => {
-        const existing = chartData.find(d => d.year === item.year);
-        if (existing) {
-            existing[item.stockName] = item.balance;
-        } else {
-            chartData.push({
-                year: item.year,
-                [item.stockName]: item.balance,
-            });
-        }
-    });
+    if (data){
+        data.forEach(item => {
+            const existing = chartData.find(d => d.year === item.year);
+            if (existing) {
+                existing[item.stockName] = item.balance;
+            } else {
+                chartData.push({
+                    year: item.year,
+                    [item.stockName]: item.balance,
+                });
+            }
+        });
+    }
+
 
     return (
         <div className="my-4">
@@ -48,7 +51,7 @@ function DCAResultsGraph({ data }) {
                         labelFormatter={(label) => `ปีที่ ${label}`}
                     />
                     <Legend />
-                    {Object.keys(chartData[0])
+                    {chartData &&Object.keys(chartData[0])
                         .filter(key => key !== 'year')
                         .map((key, index) => (
                             <Line

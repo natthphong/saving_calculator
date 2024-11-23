@@ -44,7 +44,13 @@ function DCAInvestment() {
     const handleCalculate = () => {
         const validData = stockCards.map(card => card.stockData).filter(data => data !== null);
         const calculations = calculateDCAInvestment(validData);
-        setResults(calculations);
+        if (calculations.data.length === 0) {
+            alert("no data")
+        }else{
+            setResults(calculations);
+        }
+
+
     };
 
     const updateStockData = (id, data) => {
