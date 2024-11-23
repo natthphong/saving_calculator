@@ -68,6 +68,8 @@ function DCAInvestment() {
             return;
         }
 
+        const marginTop = 100; // ระยะขอบด้านบน 100px
+
         html2canvas(input, { scale: 2 }).then((canvas) => {
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF({
@@ -80,22 +82,27 @@ function DCAInvestment() {
             const imgWidth = 595.28;
             const pageHeight = 841.89;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
             let heightLeft = imgHeight;
-            let position = 0;
+            let position = marginTop; // เริ่มต้นที่ marginTop
+
+            // หัก marginTop จากความสูงที่เหลือ
+            heightLeft -= marginTop;
 
             pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
 
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
+            while (heightLeft > -pageHeight) {
+                position = heightLeft - imgHeight + marginTop;
                 pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
             }
 
-            pdf.save('DCA_Investment_Report.pdf');
+            pdf.save('Investment_Report.pdf');
         });
     };
+
 
     return (
         <ThemeProvider theme={theme}>
