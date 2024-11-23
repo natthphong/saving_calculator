@@ -34,7 +34,7 @@ function PortfolioOverview({ portfolio }) {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2,
                                 }),
-                                `มูลค่า (${stock.totalSharesHeld.toFixed(2)} หุ้น)`,
+
                             ];
                         }}
                     />

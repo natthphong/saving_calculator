@@ -41,13 +41,12 @@ function DCAInvestment() {
         setStockCards([...stockCards, { id: stockCards.length + 1, stockData: null }]);
     };
 
-    const handleCalculate = (id, params) => {
-        // อัปเดตข้อมูลของหุ้นนั้น
-        setStockCards(stockCards.map(card => (card.id === id ? { ...card, stockData: params } : card)));
+    const handleDataChange = (id, data) => {
+        setStockCards(stockCards.map(card => (card.id === id ? { ...card, stockData: data } : card)));
+    };
 
-        // ตรวจสอบว่าหุ้นทั้งหมดมีข้อมูลครบหรือไม่
-        const validData = stockCards.map(card => (card.id === id ? params : card.stockData)).filter(data => data !== null);
-
+    const handleCalculate = () => {
+        const validData = stockCards.map(card => card.stockData).filter(data => data !== null);
         if (validData.length === stockCards.length) {
             // คำนวณเมื่อหุ้นทุกตัวมีข้อมูลครบ
             const calculations = calculateDCAInvestment(validData);
@@ -106,12 +105,16 @@ function DCAInvestment() {
                     <DCACalculatorForm
                         key={card.id}
                         id={card.id}
-                        handleCalculate={(params) => handleCalculate(card.id, params)}
+                        onDataChange={handleDataChange}
                         onRemove={removeStockCard}
                     />
                 ))}
+                {/* ปุ่ม "เพิ่มหุ้น +" และ "คำนวณ" */}
                 <Button variant="success" onClick={addStockCard} className="mt-3">
                     เพิ่มหุ้น +
+                </Button>
+                <Button variant="primary" onClick={handleCalculate} className="mt-3 ml-3">
+                    คำนวณ
                 </Button>
                 {results && (
                     <>
