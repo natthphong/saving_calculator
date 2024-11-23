@@ -3,12 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import {
     TextField,
-    Card,
-    CardContent,
     Typography,
     Grid,
     Button,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
 } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 function DCACalculatorForm({ id, stockData, onUpdate, onRemove }) {
@@ -16,16 +18,18 @@ function DCACalculatorForm({ id, stockData, onUpdate, onRemove }) {
         stockData || {
             stockName: '',
             currentStockPrice: '',
-            initialPrincipal: '', // เพิ่มฟิลด์เงินต้น
+            initialPrincipal: '',
             stockReturnRate: '',
             dividendYield: '',
             dividendGrowthRate: '',
             contribution: '',
             investmentYears: '',
             dividendReinvestmentRate: '100',
-            dividendTaxRate: '0', // เพิ่มฟิลด์ภาษีปันผล (ถ้ายังไม่ได้เพิ่ม)
+            dividendTaxRate: '0',
         }
     );
+
+    const [expanded, setExpanded] = useState(false); // ตั้งค่าเริ่มต้นเป็นปิด
 
     useEffect(() => {
         onUpdate(id, formData);
@@ -36,19 +40,30 @@ function DCACalculatorForm({ id, stockData, onUpdate, onRemove }) {
     };
 
     return (
-        <Card className="my-4">
-            <CardContent>
+        <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
+            <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={`panel${id}-content`}
+                id={`panel${id}-header`}
+            >
                 <Grid container alignItems="center" justifyContent="space-between">
-                    <Typography variant="h5">หุ้น #{id}</Typography>
+                    <Typography variant="h5">
+                        หุ้น #{id}: {formData.stockName || 'ยังไม่ได้ระบุชื่อ'}
+                    </Typography>
                     <Button
                         variant="outlined"
                         color="secondary"
-                        onClick={() => onRemove(id)}
+                        onClick={(e) => {
+                            e.stopPropagation(); // ป้องกันการยุบ/ขยายเมื่อคลิกปุ่มลบ
+                            onRemove(id);
+                        }}
                         startIcon={<DeleteIcon />}
                     >
                         ลบ
                     </Button>
                 </Grid>
+            </AccordionSummary>
+            <AccordionDetails>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <TextField
@@ -134,8 +149,8 @@ function DCACalculatorForm({ id, stockData, onUpdate, onRemove }) {
                         />
                     </Grid>
                 </Grid>
-            </CardContent>
-        </Card>
+            </AccordionDetails>
+        </Accordion>
     );
 }
 
