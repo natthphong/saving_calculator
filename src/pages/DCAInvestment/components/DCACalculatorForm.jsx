@@ -16,7 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 function DCACalculatorForm({ id, onDataChange, onRemove }) {
     // สถานะสำหรับฟิลด์ต่าง ๆ
     const [stockName, setStockName] = useState('');
-    const [currentStockPrice, setCurrentStockPrice] = useState('');
+    const [currentStockPrice, setCurrentStockPrice] = useState('1');
     const [initialPrincipal, setInitialPrincipal] = useState('');
     const [stockReturnRate, setStockReturnRate] = useState('');
     const [dividendYield, setDividendYield] = useState('');
@@ -36,6 +36,10 @@ function DCACalculatorForm({ id, onDataChange, onRemove }) {
                 setStockName(value);
                 break;
             case 'currentStockPrice':
+                if (value<=0){
+                    alert("cannot value price equal less than 0")
+                    break;
+                }
                 setCurrentStockPrice(value);
                 break;
             case 'initialPrincipal':
@@ -69,7 +73,7 @@ function DCACalculatorForm({ id, onDataChange, onRemove }) {
         // สร้างวัตถุ params จากค่าปัจจุบันของฟิลด์ทั้งหมด
         const params = {
             stockName: field === 'stockName' ? value : stockName,
-            currentStockPrice: parseFloat(field === 'currentStockPrice' ? value : currentStockPrice) || 0,
+            currentStockPrice: parseFloat(field === 'currentStockPrice' ? value : currentStockPrice) || 1,
             initialPrincipal: parseFloat(field === 'initialPrincipal' ? value : initialPrincipal) || 0,
             stockReturnRate: parseFloat(field === 'stockReturnRate' ? value : stockReturnRate) || 0,
             dividendYield: parseFloat(field === 'dividendYield' ? value : dividendYield) || 0,
